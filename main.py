@@ -3,11 +3,12 @@ from os import getenv
 from typing import List, Optional
 
 import strawberry
+from dotenv import load_dotenv
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from neo4j import GraphDatabase
 from strawberry.asgi import GraphQL
-from dotenv import load_dotenv
-from fastapi.middleware.cors import CORSMiddleware
+
 load_dotenv()
 
 AURADB_URI = getenv("AURADB_URI")
@@ -213,7 +214,7 @@ class Query:
     def getUserQuestions(self) -> List[Question]:
         with graph.session() as session:
             query = """
-                MATCH (q:Question)
+                match (a:Application)--(q:Question)
                 WHERE q.role = "User"
                 RETURN q
             """
